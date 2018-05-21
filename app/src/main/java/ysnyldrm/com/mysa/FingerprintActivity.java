@@ -33,11 +33,13 @@ public class FingerprintActivity extends AppCompatActivity implements FingerPrin
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fingerprint);
 
+        final Intent i = new Intent(getApplicationContext(),PasswordActivity.class);
         mGoToSettingsBtn = (Button) findViewById(R.id.go_to_settings_btn);
+
         mGoToSettingsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FingerPrintUtils.openSecuritySettings(FingerprintActivity.this);
+                startActivity(i);
             }
         });
 
