@@ -35,7 +35,6 @@ public class PasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password);
         sqliteHelper = new SqliteHelper(this);
-        initCreateAccountTextView();
         initViews();
 
 
@@ -79,18 +78,7 @@ public class PasswordActivity extends AppCompatActivity {
 
 
 
-    //this method used to set Create account TextView text and click event( maltipal colors
-    // for TextView yet not supported in Xml so i have done it programmatically)
-    private void initCreateAccountTextView() {
-        TextView textViewCreateAccount = (TextView) findViewById(R.id.textViewCreateAccount);
-        textViewCreateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PasswordActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
+
 
     //this method is used to connect XML views to its Objects
     private void initViews() {

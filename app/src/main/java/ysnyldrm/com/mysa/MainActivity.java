@@ -45,12 +45,11 @@ public class MainActivity extends AppCompatActivity {
 
         if(phoneNumber != null){
 
-            Intent intent = new Intent(this,LoginTypeActivity.class);
+            Intent intent = new Intent(this,FingerprintActivity.class);
             startActivity(intent);
 
         }
 
-        initTextViewLogin();
         initViews();
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,19 +85,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
-
-    private void initTextViewLogin() {
-        TextView textViewLogin = (TextView) findViewById(R.id.textViewLogin);
-        textViewLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent  = new Intent(MainActivity.this,LoginTypeActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
 
     private void initViews() {
 

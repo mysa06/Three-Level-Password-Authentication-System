@@ -90,7 +90,7 @@
                 android:textColorHighlight="@color/colorBlack"
                 android:shadowColor="@color/colorBlack"
                 android:textColorLink="@color/colorBlack"
-                android:inputType="textPassword" />
+                android:inputType="phone" />
         </android.support.design.widget.TextInputLayout>
 
         <Button
@@ -109,14 +109,5 @@
             android:shadowDy="0"
             android:shadowRadius="5"/>
 
-        <TextView
-            android:id="@+id/textViewLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="@string/text_already_member"
-            android:textColor="@drawable/text_selector"/>
     </LinearLayout>
 </ScrollView>
