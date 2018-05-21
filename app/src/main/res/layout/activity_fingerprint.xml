@@ -41,12 +41,19 @@ tools:context=".FingerprintActivity">
     android:gravity="center"
     android:textSize="18sp"/>
 
-<Button
-    android:id="@+id/go_to_settings_btn"
-    style="@android:style/Widget.Holo.Button.Borderless"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:text="Open Settings"
-    android:textColor="@android:color/holo_blue_dark"/>
+    <Button
+        android:id="@+id/go_to_settings_btn"
+        style="@android:style/Widget.Holo.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Use Password"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:background="@drawable/button_shape"
+        android:shadowColor="#A80303"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"/>
 </LinearLayout>
