@@ -19,6 +19,7 @@ public class User {
         this.password = password;
         this.phonenumber = phonenumber;
         this.macadress = macadress;
+        //adresses
     }
 
 }
