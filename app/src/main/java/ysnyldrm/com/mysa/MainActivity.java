@@ -1,7 +1,6 @@
 package ysnyldrm.com.mysa;
 
 import android.content.Intent;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -42,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
         sqliteHelper = new SqliteHelper(this);
 
-        String macAdress = sqliteHelper.getMacAdress();
+        String phoneNumber = sqliteHelper.getPhoneNumber();
 
-        if(macAdress != null){
+        if(phoneNumber != null){
 
             Intent intent = new Intent(this,LoginTypeActivity.class);
             startActivity(intent);
@@ -61,13 +60,12 @@ public class MainActivity extends AppCompatActivity {
                     String Email = editTextEmail.getText().toString();
                     String Password = editTextPassword.getText().toString();
                     String PhoneNumber = editTextPhoneNumber.getText().toString();
-                    String MacAddress = "12:25:36";
 
                     //Check in the database is there any user associated with  this email
                     if (!sqliteHelper.isEmailExists(Email)) {
 
                         //Email does not exist now add new user to database
-                        sqliteHelper.addUser(new User(null, UserName, Email, Password, PhoneNumber, MacAddress));
+                        sqliteHelper.addUser(new User(null, UserName, Email, Password, PhoneNumber));
                         Snackbar.make(buttonRegister, "User created successfully! Please Login ", Snackbar.LENGTH_LONG).show();
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -112,13 +110,14 @@ public class MainActivity extends AppCompatActivity {
         textInputLayoutEmail = (TextInputLayout) findViewById(R.id.textInputLayoutEmail);
         textInputLayoutPassword = (TextInputLayout) findViewById(R.id.textInputLayoutPassword);
         textInputLayoutUserName = (TextInputLayout) findViewById(R.id.textInputLayoutUserName);
-        textInputLayoutPhoneNumber = (TextInputLayout) findViewById(R.id.textInputLayoutphoneNumber);
+        textInputLayoutPhoneNumber = (TextInputLayout) findViewById(R.id.textInputLayoutPhoneNumber);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
 
     }
 
     public boolean validate() {
         boolean valid = false;
+
 
         //Get values from EditText fields
         String UserName = editTextUserName.getText().toString();

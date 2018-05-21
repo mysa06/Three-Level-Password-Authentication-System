@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -18,17 +17,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.stfalcon.smsverifycatcher.OnSmsCatchListener;
+import com.stfalcon.smsverifycatcher.SmsVerifyCatcher;
 
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.github.krtkush.lineartimer.LinearTimer;
 import io.github.krtkush.lineartimer.LinearTimerView;
-
-import com.stfalcon.smsverifycatcher.OnSmsCatchListener;
-import com.stfalcon.smsverifycatcher.SmsVerifyCatcher;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import android.widget.EditText;
 
 public class OtpActivity extends AppCompatActivity  {
 
@@ -43,6 +40,8 @@ public class OtpActivity extends AppCompatActivity  {
 
     String codeSent;
 
+    String phoneNumber;
+
     //Timer:
 
 
@@ -50,8 +49,11 @@ public class OtpActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
-        sendVerificationCode();
+        sqliteHelper = new SqliteHelper(this);
 
+        phoneNumber = sqliteHelper.getPhoneNumber();
+
+        sendVerificationCode();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -164,7 +166,7 @@ public class OtpActivity extends AppCompatActivity  {
 
     private void sendVerificationCode(){
 
-        String phone = "+905059398206";
+        String phone = "+90" + phoneNumber ;
                 //+ sqliteHelper.getPhoneNumber() ;
         //editTextPhone.getText().toString();
         /*if(phone.isEmpty()){
