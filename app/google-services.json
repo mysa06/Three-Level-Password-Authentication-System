@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1079139922131",
+    "firebase_url": "https://three-level-password.firebaseio.com",
+    "project_id": "three-level-password",
+    "storage_bucket": "three-level-password.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079139922131:android:9aa2681540c2c637",
+        "android_client_info": {
+          "package_name": "ysnyldrm.com.mysa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1079139922131-1vgqi0hcji2ubusnj7udmqh0djkhid7m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ysnyldrm.com.mysa",
+            "certificate_hash": "405e4977ce7ed7c7e79a7d588f88de465a3b5021"
+          }
+        },
+        {
+          "client_id": "1079139922131-tpd3jiqbjd1f6f462d6qc8l7p578osj3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ46y7yM3w_y_IKnuZAGmVLBY3kIr_Tb8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1079139922131-tpd3jiqbjd1f6f462d6qc8l7p578osj3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
