@@ -1,10 +1,15 @@
 package ysnyldrm.com.mysa;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -29,6 +35,8 @@ import io.github.krtkush.lineartimer.LinearTimerView;
 
 public class OtpActivity extends AppCompatActivity  {
 
+    private final String TAG  = "OTP";
+
     private CountDownTimer countDownTimer;
     private SmsVerifyCatcher smsVerifyCatcher;
     EditText editTextPhone, editTextCode;
@@ -36,11 +44,17 @@ public class OtpActivity extends AppCompatActivity  {
     SqliteHelper sqliteHelper;
 
     private TextView time;
-    FirebaseAuth mAuth;
+
+    private FirebaseAuth mAuth;
+
+    PhoneAuthProvider.OnVerificationStateChangedCallbacks getmCallbacks;
+    String verification_code;
 
     String codeSent;
 
     String phoneNumber;
+
+    private Button otg;
 
     //Timer:
 
@@ -49,34 +63,50 @@ public class OtpActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
+
         sqliteHelper = new SqliteHelper(this);
 
         phoneNumber = sqliteHelper.getPhoneNumber();
 
-        sendVerificationCode();
-
         mAuth = FirebaseAuth.getInstance();
 
         editTextCode = findViewById(R.id.editTextCode);
-        // editTextPhone = findViewById(R.id.editTextPhone);
 
-        // findViewById(R.id.buttonVerification).setOnClickListener(new View.OnClickListener() {
-        //@Override
-        // public void onClick(View v) {
-        //      sendVerificationCode();
-        // }
-        //});
+        otg = findViewById(R.id.nextOTG);
 
-
-        findViewById(R.id.buttonLogin).setOnClickListener(new View.OnClickListener() {
+        otg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                verifyLoginCode();
+                startActivity(new Intent(getApplicationContext(), OTGActivity.class));
+            }
+        });
+
+        getmCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+
             }
 
+            @Override
+            public void onVerificationFailed(FirebaseException e) {
+
+            }
+
+            @Override
+            public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                super.onCodeSent(s, forceResendingToken);
+                verification_code = s;
+                Toast.makeText(getApplicationContext(),"code sent to number",Toast.LENGTH_SHORT).show();
 
 
-        });
+            }
+        };
+
+        send_Sms();
+
+        //sendVerificationCode();
+
+
 
         LinearTimerView linearTimerView = (LinearTimerView)
                 findViewById(R.id.linearTimer);
@@ -137,12 +167,12 @@ public class OtpActivity extends AppCompatActivity  {
         super.onStop();
         smsVerifyCatcher.onStop();
     }
-
+/*
     private void verifyLoginCode(){
         String code = editTextCode.getText().toString();
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSent, code);
         signInWithPhoneAuthCredential(credential);
-        FirebaseAuth.getInstance().signOut();
+        //FirebaseAuth.getInstance().signOut();
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
@@ -163,55 +193,61 @@ public class OtpActivity extends AppCompatActivity  {
                     }
                 });
     }
+*/
 
-    private void sendVerificationCode(){
+    public void send_Sms(){
+        //String number = phoneNumber;
 
-        String phone = "+90" + phoneNumber ;
-                //+ sqliteHelper.getPhoneNumber() ;
-        //editTextPhone.getText().toString();
-        /*if(phone.isEmpty()){
-            editTextPhone.setError("Phone number is required");
-            editTextPhone.requestFocus();
-            return;
-        }
-
-        if(phone.length() < 10 ){
-            editTextPhone.setError("Please enter a valid phone");
-            editTextPhone.requestFocus();
-            return;
-        }*/
-
+        Log.d(TAG,"phone number : : : : " + phoneNumber);
 
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phone,        // Phone number to verify
-                120,                 // Timeout duration
-                TimeUnit.SECONDS,   // Unit of timeout
-                this,               // Activity (for callback binding)
-                mCallbacks);        // OnVerificationStateChangedCallbacks
+                "+905301180330",60,TimeUnit.SECONDS,this,getmCallbacks
+        );
     }
 
+    public void signInWithPhone(PhoneAuthCredential credential){
+        mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), "User signed in Successfully.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 
+    public void Verify(View view){
 
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        startActivity(new Intent(getApplicationContext(), OTGActivity.class));
 
-        @Override
-        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+        /*String input_code = editTextCode.getText().toString();
+        //if (verification_code.equals("")){
+            verifyPhoneNumber(verification_code,input_code);
+       // }*/
+    }
 
-        }
+    public void verifyPhoneNumber(String verifyCode, String inputCode){
 
-        @Override
-        public void onVerificationFailed(FirebaseException e) {
+        Log.d(TAG," verify code :  " + verifyCode);
+        PhoneAuthCredential credential =  PhoneAuthProvider.getCredential(verifyCode,inputCode);
+        signInWithPhone(credential);
+    }
 
-        }
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert).setTitle("Exit")
+                .setMessage("Are you sure for exit the application?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-        @Override
-        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            super.onCodeSent(s, forceResendingToken);
-
-            codeSent = s;
-        }
-    };
-
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                }).setNegativeButton("No", null).show();
+    }
 
 }
 
