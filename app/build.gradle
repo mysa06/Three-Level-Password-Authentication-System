@@ -16,6 +16,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
@@ -39,6 +40,8 @@ dependencies {
 
     implementation 'com.github.mjdev:libaums:0.5.5'
 }
+
+
 
 
 

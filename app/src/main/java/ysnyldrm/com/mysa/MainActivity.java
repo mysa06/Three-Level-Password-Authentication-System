@@ -1,5 +1,6 @@
 package ysnyldrm.com.mysa;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -38,52 +38,61 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        otgmessage();
 
-        sqliteHelper = new SqliteHelper(this);
 
-        String phoneNumber = sqliteHelper.getPhoneNumber();
 
-        if(phoneNumber != null){
+            //
 
-            Intent intent = new Intent(this,FingerprintActivity.class);
-            startActivity(intent);
+            sqliteHelper = new SqliteHelper(this);
 
+            String phoneNumber = sqliteHelper.getPhoneNumber();
+
+            if (phoneNumber != null) {
+
+                Intent intent = new Intent(this, FingerprintActivity.class);
+                startActivity(intent);
+
+            }
+
+            initViews();
+            buttonRegister.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (validate()) {
+                        String UserName = editTextUserName.getText().toString();
+                        String Email = editTextEmail.getText().toString();
+                        String Password = editTextPassword.getText().toString();
+                        String PhoneNumber = editTextPhoneNumber.getText().toString();
+
+
+                        //Check in the database is there any user associated with  this email
+                        if (!sqliteHelper.isEmailExists(Email)) {
+
+                            //Email does not exist now add new user to database
+                            sqliteHelper.addUser(new User(null, UserName, Email, Password, PhoneNumber));
+                            Snackbar.make(buttonRegister, "User created successfully! Please Login ", Snackbar.LENGTH_LONG).show();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(MainActivity.this, LoginTypeActivity.class);
+                                    startActivity(intent);
+                                }
+                            }, Snackbar.LENGTH_LONG);
+                        } else {
+
+                            //Email exists with email input provided so show error user already exist
+                            Snackbar.make(buttonRegister, "User already exists with same email ", Snackbar.LENGTH_LONG).show();
+                        }
+
+
+                    }
+                }
+            });
         }
 
-        initViews();
-        buttonRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (validate()) {
-                    String UserName = editTextUserName.getText().toString();
-                    String Email = editTextEmail.getText().toString();
-                    String Password = editTextPassword.getText().toString();
-                    String PhoneNumber = editTextPhoneNumber.getText().toString();
 
-                    //Check in the database is there any user associated with  this email
-                    if (!sqliteHelper.isEmailExists(Email)) {
-
-                        //Email does not exist now add new user to database
-                        sqliteHelper.addUser(new User(null, UserName, Email, Password, PhoneNumber));
-                        Snackbar.make(buttonRegister, "User created successfully! Please Login ", Snackbar.LENGTH_LONG).show();
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent(MainActivity.this, LoginTypeActivity.class);
-                                startActivity(intent);
-                            }
-                        }, Snackbar.LENGTH_LONG);
-                    } else {
-
-                        //Email exists with email input provided so show error user already exist
-                        Snackbar.make(buttonRegister, "User already exists with same email ", Snackbar.LENGTH_LONG).show();
-                    }
-
-
-                }
-            }
-        });
-    }
+    ////
 
 
     private void initViews() {
@@ -92,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextUserName = (EditText) findViewById(R.id.editTextUserName);
         editTextPhoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
+
 
         textInputLayoutEmail = (TextInputLayout) findViewById(R.id.textInputLayoutEmail);
         textInputLayoutPassword = (TextInputLayout) findViewById(R.id.textInputLayoutPassword);
@@ -166,10 +176,44 @@ public class MainActivity extends AppCompatActivity {
         return valid;
     }
 
+    public void otgmessage(){
+
+        String otgMessage;
+        final ProgressDialog progressDialog = new ProgressDialog(this,
+                R.style.Theme_AppCompat_Light_DialogWhenLarge);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Please Plug-In your OTG Device before registration ...");
+        progressDialog.show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+
+
+                progressDialog.dismiss();
+
+            }
+
+        }, 10000);
+
+
+    }
+
 
 }
 
 
+/*
+
+new CountDownTimer(900000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                textcountdown.setText(""+String.format("%d Dakika, %d Saniye",
+                        TimeUnit.MILLISECONDS.toMinutes( millisUntilFinished),
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+            }
+
+ */
 
 
 

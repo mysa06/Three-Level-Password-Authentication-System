@@ -10,7 +10,6 @@ import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class PasswordActivity extends AppCompatActivity {
 
@@ -51,7 +50,7 @@ public class PasswordActivity extends AppCompatActivity {
                     String Password = editTextPassword.getText().toString();
 
                     //Authenticate user
-                    User currentUser = sqliteHelper.Authenticate(new User(null, null, Email, Password, null));
+                    User currentUser = sqliteHelper.Authenticate(new User(null, null, Email, Password, null, null, null));
 
                     //Check Authentication is successful or not
                     if (currentUser != null) {
