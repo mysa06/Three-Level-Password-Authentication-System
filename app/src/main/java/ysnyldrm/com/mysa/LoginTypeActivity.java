@@ -16,13 +16,10 @@ public class LoginTypeActivity extends AppCompatActivity {
 
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_type);
-        sqliteHelper = new SqliteHelper(this);
-
 
 
         buttonFingerprint = (Button) findViewById(R.id.btn_choosefingerprint);
