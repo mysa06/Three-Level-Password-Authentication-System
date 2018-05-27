@@ -184,27 +184,6 @@ public class MainActivity extends AppCompatActivity {
         }, 10000);
 
 
-        /*new CountDownTimer(10000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-
-
-                final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this,
-                        R.style.Theme_AppCompat_DayNight_Dialog);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Please plug-in your OTG device for registration in 10 Seconds. You are redirecting ... ");
-                progressDialog.show();
-
-            }
-
-            public void onFinish() {
-
-
-
-            }
-        }.start(); */
-
-
     }
 }
 
@@ -214,62 +193,5 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    /*   public void CreateAccount(View view ){
 
-        boolean flag = true;
-
-        String nameString = name.getText().toString();
-        String emailString = email.getText().toString();
-        String passwordString = password.getText().toString();
-        String phoneNumberString = phoneNumber.getText().toString();
-
-        if (TextUtils.isEmpty(nameString)) {
-            name.setError("This field is required !");
-            flag = false;
-        } else if (TextUtils.isEmpty(emailString)) {
-            email.setError("This field is required !");
-            flag = false;
-
-        } else if (TextUtils.isEmpty(passwordString)) {
-            password.setError("This field is required !");
-            flag = false;
-        }
-          else if(TextUtils.isEmpty(phoneNumberString)){
-            phoneNumber.setError("This field is required !");
-        }
-          else if(flag == true){
-
-            final ProgressDialog progressDialog = new ProgressDialog(this,
-                    R.style.Theme_AppCompat_DayNight_Dialog);
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Creating Account...");
-            progressDialog.show();
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-
-
-                }
-
-            }, 1000);
-
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    final Intent mainIntent = new Intent(MainActivity.this, LoginTypeActivity.class);
-                    MainActivity.this.startActivity(mainIntent);
-                    MainActivity.this.finish();
-                    progressDialog.dismiss();
-                }
-
-            }, 3000);
-        }
-
-
-
-    } */
 

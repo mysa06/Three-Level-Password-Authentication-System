@@ -31,7 +31,7 @@ public class FingerprintActivity extends AppCompatActivity implements FingerPrin
 
         sqliteHelper2 = new SqliteHelper2(this);
 
-        //Toast.makeText(getApplicationContext(), sqliteHelper2.getVendorId(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), sqliteHelper2.getVendorId(), Toast.LENGTH_LONG).show();
 
         mGoToSettingsBtn = (Button) findViewById(R.id.go_to_settings_btn);
         mGoToPasswordBtn = (Button) findViewById(R.id.go_to_use_password);

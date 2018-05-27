@@ -83,7 +83,7 @@ public class OtgRegister extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                    Intent intent = new Intent(OtgRegister.this,LoginTypeActivity.class);
+                    Intent intent = new Intent(OtgRegister.this,FingerprintActivity.class);
                     startActivity(intent);
 
                 }

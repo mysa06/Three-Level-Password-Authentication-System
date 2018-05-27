@@ -25,9 +25,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginTypeActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".FingerprintActivity"
             android:screenOrientation="portrait" />
         <activity
