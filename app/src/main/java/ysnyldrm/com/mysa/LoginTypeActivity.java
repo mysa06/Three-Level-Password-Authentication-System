@@ -11,15 +11,13 @@ public class LoginTypeActivity extends AppCompatActivity {
     Button buttonFingerprint;
     Button buttonPassword;
 
-    SqliteHelper sqliteHelper;
-
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_type);
+
 
 
         buttonFingerprint = (Button) findViewById(R.id.btn_choosefingerprint);

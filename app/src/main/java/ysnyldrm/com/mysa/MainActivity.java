@@ -1,5 +1,6 @@
 package ysnyldrm.com.mysa;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextEmail;
     private EditText editTextPassword;
     private EditText editTextPhoneNumber;
-
 
 
     TextInputLayout textInputLayoutUserName;
@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
         String phoneNumber = sqliteHelper.getPhoneNumber();
 
-        if(phoneNumber != null){
+        if (phoneNumber != null) {
 
-            Intent intent = new Intent(this,FingerprintActivity.class);
+            Intent intent = new Intent(this, FingerprintActivity.class);
             startActivity(intent);
 
         }
@@ -64,12 +64,11 @@ public class MainActivity extends AppCompatActivity {
 
                         //Email does not exist now add new user to database
                         sqliteHelper.addUser(new User(null, UserName, Email, Password, PhoneNumber));
-                        Snackbar.make(buttonRegister, "User created successfully! Please Login ", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(buttonRegister, "Hint : If your OTG device is not connected at  any time the program will execute yourself !", Snackbar.LENGTH_LONG).show();
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                Intent intent = new Intent(MainActivity.this, LoginTypeActivity.class);
-                                startActivity(intent);
+                                otgMessage();
                             }
                         }, Snackbar.LENGTH_LONG);
                     } else {
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             valid = false;
             textInputLayoutUserName.setError("Please enter valid username!");
         } else {
-            if (UserName.length() > 5) {
+            if (UserName.length() > 2) {
                 valid = true;
                 textInputLayoutUserName.setError(null);
             } else {
@@ -165,7 +164,48 @@ public class MainActivity extends AppCompatActivity {
         return valid;
     }
 
+    public void otgMessage() {
 
+        final ProgressDialog progressDialog = new ProgressDialog(this,
+                R.style.Theme_AppCompat_DayNight_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Please plug-in your OTG device for registration in 10 Seconds. You are redirecting ...");
+        progressDialog.show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                Intent intent = new Intent(MainActivity.this,OtgRegister.class);
+                startActivity(intent);
+
+            }
+
+        }, 10000);
+
+
+        /*new CountDownTimer(10000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+
+
+                final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this,
+                        R.style.Theme_AppCompat_DayNight_Dialog);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Please plug-in your OTG device for registration in 10 Seconds. You are redirecting ... ");
+                progressDialog.show();
+
+            }
+
+            public void onFinish() {
+
+
+
+            }
+        }.start(); */
+
+
+    }
 }
 
 

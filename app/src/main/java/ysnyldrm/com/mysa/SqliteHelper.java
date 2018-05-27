@@ -70,6 +70,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         values.put(KEY_PASSWORD, user.password);
         values.put(KEY_PHONENUMBER, user.phonenumber);
 
+
         // insert row
         long todo_id = db.insert(TABLE_USERS, null, values);
     }
@@ -114,6 +115,25 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return false;
     }
 
+    public boolean isOTGExists(String keyid) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS,// Selecting Table
+                new String[]{KEY_ID, KEY_USER_NAME, KEY_EMAIL, KEY_PASSWORD, KEY_PHONENUMBER},//Selecting columns want to query
+                KEY_EMAIL + "=?",
+                new String[]{keyid},//Where clause
+                null, null, null);
+
+
+        if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+
+            //if cursor has value then in user database there is user associated with this given email so return true
+            return true;
+        }
+
+        //if email does not exist return false
+        return false;
+    }
+
 
     public String getPhoneNumber() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -136,4 +156,6 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
 
     }
+
+
 }

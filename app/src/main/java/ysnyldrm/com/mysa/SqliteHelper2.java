@@ -25,7 +25,7 @@ public class SqliteHelper2 extends SQLiteOpenHelper {
     public static final String KEY_GUID = "guid";
     public static final String KEY_RANDOMSTR = "randomstr";
 
-    public static final String SQL_TABLE_USERS = " CREATE TABLE " + TABLE_USERS2
+    public static final String SQL_TABLE_USERS2 = " CREATE TABLE " + TABLE_USERS2
             + " ( "
             + KEY_ID + " INTEGER PRIMARY KEY, "
             + KEY_VENDORID + " TEXT, "
@@ -43,7 +43,7 @@ public class SqliteHelper2 extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         //Create Table when oncreate gets called
-        sqLiteDatabase.execSQL(SQL_TABLE_USERS);
+        sqLiteDatabase.execSQL(SQL_TABLE_USERS2);
 
     }
 
@@ -93,12 +93,12 @@ public class SqliteHelper2 extends SQLiteOpenHelper {
         return null;
     } */
 
-    public boolean isOTGexists(String productid) {
+    public boolean isOTGexists(String keyid) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_USERS2,// Selecting Table
                 new String[]{KEY_ID, KEY_VENDORID, KEY_PRODUCTID, KEY_GUID, KEY_RANDOMSTR},//Selecting columns want to query
-                KEY_PRODUCTID + "=?",
-                new String[]{productid},//Where clause
+                KEY_ID + "=?",
+                new String[]{keyid},//Where clause
                 null, null, null);
 
 

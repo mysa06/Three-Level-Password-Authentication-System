@@ -22,11 +22,16 @@ public class FingerprintActivity extends AppCompatActivity implements FingerPrin
     private Button mGoToSettingsBtn;
     private Button mGoToPasswordBtn;
     private FingerPrintAuthHelper mFingerPrintAuthHelper;
+    SqliteHelper2 sqliteHelper2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fingerprint);
+
+        sqliteHelper2 = new SqliteHelper2(this);
+
+        //Toast.makeText(getApplicationContext(), sqliteHelper2.getVendorId(), Toast.LENGTH_LONG).show();
 
         mGoToSettingsBtn = (Button) findViewById(R.id.go_to_settings_btn);
         mGoToPasswordBtn = (Button) findViewById(R.id.go_to_use_password);

@@ -9,8 +9,12 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mjdev.libaums.UsbMassStorageDevice;
@@ -27,22 +31,78 @@ import java.security.SecureRandom;
 import java.util.UUID;
 
 import static junit.framework.Assert.assertTrue;
-public class OTGActivity extends AppCompatActivity {
+public class OtgRegister extends AppCompatActivity {
 
     private SecureRandom random = new SecureRandom();
+    SqliteHelper2 sqliteHelper2;
+
+    TextView textView1;
+    TextView textView2;
+    TextView textView3;
+    TextView textView4;
+    ImageView imageView1;
+    ImageView imageView2;
+
+    String vendorid ;
+    String productid;
+    String gd;
+    String randomstr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_otg);
+        setContentView(R.layout.activity_otg_register);
+        sqliteHelper2 = new SqliteHelper2(this);
+
+        textView1 = (TextView) findViewById(R.id.textview1);
+        textView2 = (TextView) findViewById(R.id.textview2);
+        textView3 = (TextView) findViewById(R.id.textview3);
+        textView4 = (TextView) findViewById(R.id.textview4);
+        imageView1 = (ImageView) findViewById(R.id.imageview1);
+        imageView2 = (ImageView) findViewById(R.id.imageview2);
 
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         registerReceiver(usbReceiver, filter);
         discoverDevice();
+        sqliteHelper2.addUser(new User2(null, "vendor1", "product1", gd, randomstr));
 
 
+        if (sqliteHelper2.isOTGexists("1") == true) {
+            textView1.setVisibility(View.VISIBLE);
+            textView2.setVisibility(View.VISIBLE);
+            textView3.setVisibility(View.GONE);
+            textView4.setVisibility(View.GONE);
+            imageView1.setVisibility(View.VISIBLE);
+            imageView2.setVisibility(View.GONE);
+
+
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    Intent intent = new Intent(OtgRegister.this,LoginTypeActivity.class);
+                    startActivity(intent);
+
+                }
+
+            }, 3000);
+
+
+
+        } else {
+
+            textView1.setVisibility(View.GONE);
+            textView2.setVisibility(View.GONE);
+            textView3.setVisibility(View.VISIBLE);
+            textView4.setVisibility(View.VISIBLE);
+            imageView1.setVisibility(View.GONE);
+            imageView2.setVisibility(View.VISIBLE);
+
+
+        }
     }
 
     /**
@@ -61,13 +121,15 @@ public class OTGActivity extends AppCompatActivity {
             CreateFile();
 
             //in order to validate usb
-            checkAndReadFile();
+           // checkAndReadFile();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
+
 
     private  void testCreateFile()
             throws IOException {
@@ -109,6 +171,11 @@ public class OTGActivity extends AppCompatActivity {
         UsbFile file = root.createFile(guid + ".mysa");
         OutputStream os = new UsbFileOutputStream(file);
 
+        vendorid = "24a";
+        productid = "xc21";
+        gd = guid;
+        randomstr = randStr;
+
         os.write(randStr.getBytes());
         os.close();
     }
@@ -138,6 +205,7 @@ public class OTGActivity extends AppCompatActivity {
 
         if( readStr.trim().equals(randStr) )
         {
+
             Toast.makeText(this, "The usb passed",
                     Toast.LENGTH_LONG).show();
         }
@@ -224,7 +292,7 @@ public class OTGActivity extends AppCompatActivity {
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
 
-                // determine if connected device is a mass storage devuce
+                // determine if connected device is a mass storage device
                 if (device != null) {
                     discoverDevice();
                 }
@@ -234,10 +302,10 @@ public class OTGActivity extends AppCompatActivity {
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
 
-                // determine if connected device is a mass storage devuce
+                // determine if connected device is a mass storage device
                 if (device != null) {
-                    if (OTGActivity.this.device != null) {
-                        OTGActivity.this.device.close();
+                    if (OtgRegister.this.device != null) {
+                        OtgRegister.this.device.close();
                     }
                     // check if there are other devices or set action bar title
                     // to no device if not
