@@ -11,6 +11,9 @@ import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mjdev.libaums.UsbMassStorageDevice;
@@ -30,11 +33,26 @@ import static junit.framework.Assert.assertTrue;
 public class OTGActivity extends AppCompatActivity {
 
     private SecureRandom random = new SecureRandom();
+    SqliteHelper2 sqliteHelper2;
+    TextView textView1;
+    TextView textView2;
+    TextView textView3;
+    TextView textView4;
+    ImageView imageView1;
+    ImageView imageView2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otg);
+        sqliteHelper2 = new SqliteHelper2(this);
+
+        textView1 = (TextView) findViewById(R.id.textview1);
+        textView2 = (TextView) findViewById(R.id.textview2);
+        textView3 = (TextView) findViewById(R.id.textview3);
+        textView4 = (TextView) findViewById(R.id.textview4);
+        imageView1 = (ImageView) findViewById(R.id.imageview1);
+        imageView2 = (ImageView) findViewById(R.id.imageview2);
 
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
@@ -58,7 +76,7 @@ public class OTGActivity extends AppCompatActivity {
 
         try {
             //in order to setup usb
-            CreateFile();
+            //CreateFile();
 
             //in order to validate usb
             checkAndReadFile();
@@ -123,8 +141,8 @@ public class OTGActivity extends AppCompatActivity {
     private  void checkAndReadFile()
             throws IOException {
 
-        String fileName = "da87770d-bab0-4b38-8502-07c3b7bcf0f4.mysa";
-        String randStr = "v5lntqtllt1jse9i1cbabha001";
+        String fileName = sqliteHelper2.getGuid() + ".mysa";
+        String randStr = sqliteHelper2.getRandomStr();
         UsbFile[] files;
 
         UsbFile root = fs.getRootDirectory();
@@ -138,13 +156,21 @@ public class OTGActivity extends AppCompatActivity {
 
         if( readStr.trim().equals(randStr) )
         {
-            Toast.makeText(this, "The usb passed",
-                    Toast.LENGTH_LONG).show();
+            textView1.setVisibility(View.VISIBLE);
+            textView2.setVisibility(View.VISIBLE);
+            textView3.setVisibility(View.GONE);
+            textView4.setVisibility(View.GONE);
+            imageView1.setVisibility(View.VISIBLE);
+            imageView2.setVisibility(View.GONE);
         }
         else
         {
-            Toast.makeText(this, "The usb failed",
-                    Toast.LENGTH_LONG).show();
+            textView1.setVisibility(View.GONE);
+            textView2.setVisibility(View.GONE);
+            textView3.setVisibility(View.VISIBLE);
+            textView4.setVisibility(View.VISIBLE);
+            imageView1.setVisibility(View.GONE);
+            imageView2.setVisibility(View.VISIBLE);
         }
 
     }

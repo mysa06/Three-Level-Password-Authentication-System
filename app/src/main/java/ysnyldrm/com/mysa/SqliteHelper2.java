@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SqliteHelper2 extends SQLiteOpenHelper {
 
     //DATABASE NAME
-    public static final String DATABASE_NAME2 = "mysadatabase2";
+    public static final String DATABASE_NAME = "mysadatabase2";
 
     //DATABASE VERSION
     public static final int DATABASE_VERSION = 1;
@@ -37,7 +37,7 @@ public class SqliteHelper2 extends SQLiteOpenHelper {
     public static String number = "";
 
     public SqliteHelper2(Context context) {
-        super(context, DATABASE_NAME2, null, DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -72,26 +72,7 @@ public class SqliteHelper2 extends SQLiteOpenHelper {
         long todo_id = db.insert(TABLE_USERS2, null, values);
     }
 
-   /* public User2 Authenticate(User2 user2) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_USERS2,// Selecting Table
-                new String[]{KEY_ID, KEY_VENDORID, KEY_PRODUCTID, KEY_GUID, KEY_RANDOMSTR},//Selecting columns want to query
-                KEY_PRODUCTID + "=?",
-                new String[]{user2.email},//Where clause
-                null, null, null);
 
-        if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
-            //if cursor has value then in user database there is user associated with this given email
-            User user1 = new User(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
-            //Match both passwords check they are same or not
-            if (user.password.equalsIgnoreCase(user1.password)) {
-
-                return user1;
-
-            }
-        }
-        return null;
-    } */
 
     public boolean isOTGexists(String keyid) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -113,7 +94,29 @@ public class SqliteHelper2 extends SQLiteOpenHelper {
     }
 
 
-    public String getVendorId() {
+    public String getRandomStr() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS2,// Selecting Table
+                new String[]{KEY_ID, KEY_VENDORID, KEY_PRODUCTID, KEY_GUID, KEY_RANDOMSTR},//Selecting columns want to query
+                KEY_ID + "=?",
+                new String[]{"1"},//Where clause
+                null, null, null);
+
+
+        if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+            //if cursor has value then in user database there is user associated with this given email
+            User2 user3 = new User2(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
+            //Match both passwords check they are same or not
+
+            return user3.randomstr;
+        }
+        else
+            return null;
+
+
+    }
+
+    public String getGuid() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_USERS2,// Selecting Table
                 new String[]{KEY_ID, KEY_VENDORID, KEY_PRODUCTID, KEY_GUID, KEY_RANDOMSTR},//Selecting columns want to query

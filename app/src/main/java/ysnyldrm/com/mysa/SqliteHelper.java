@@ -38,6 +38,8 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     public static String number = "";
 
+    SQLiteDatabase sqLiteDatabase;
+
     public SqliteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -54,6 +56,13 @@ public class SqliteHelper extends SQLiteOpenHelper {
         //drop table to create new one if database version updated
         sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + TABLE_USERS);
     }
+
+
+    public void dropTable(){
+
+        sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + TABLE_USERS);
+    }
+
 
     //using this method we can add users to user table
     public void addUser(User user) {

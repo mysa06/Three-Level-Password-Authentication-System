@@ -48,11 +48,14 @@ public class OtgRegister extends AppCompatActivity {
     String gd;
     String randomstr;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otg_register);
         sqliteHelper2 = new SqliteHelper2(this);
+
+
 
         textView1 = (TextView) findViewById(R.id.textview1);
         textView2 = (TextView) findViewById(R.id.textview2);
@@ -66,7 +69,7 @@ public class OtgRegister extends AppCompatActivity {
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         registerReceiver(usbReceiver, filter);
         discoverDevice();
-        sqliteHelper2.addUser(new User2(null, "vendor1", "product1", gd, randomstr));
+
 
 
         if (sqliteHelper2.isOTGexists("1") == true) {
@@ -108,6 +111,7 @@ public class OtgRegister extends AppCompatActivity {
     /**
      * Action string to request the permission to communicate with an UsbDevice.
      */
+
     private static final String ACTION_USB_PERMISSION = "com.github.mjdev.libaums.USB_PERMISSION";
 
     private UsbMassStorageDevice device;
@@ -119,9 +123,10 @@ public class OtgRegister extends AppCompatActivity {
         try {
             //in order to setup usb
             CreateFile();
+            sqliteHelper2.addUser(new User2(null, "vendor1", "product1", gd, randomstr));
 
             //in order to validate usb
-           // checkAndReadFile();
+            // checkAndReadFile();
 
         } catch (Exception e) {
             e.printStackTrace();
