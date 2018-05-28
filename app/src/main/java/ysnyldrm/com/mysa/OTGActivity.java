@@ -42,20 +42,20 @@ public class OTGActivity extends AppCompatActivity {
     ImageView imageView1;
     ImageView imageView2;
 
+    boolean flag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otg);
         sqliteHelper2 = new SqliteHelper2(this);
 
-        textView1 = (TextView) findViewById(R.id.textview1);
-        textView2 = (TextView) findViewById(R.id.textview2);
-        textView3 = (TextView) findViewById(R.id.textview3);
-        textView4 = (TextView) findViewById(R.id.textview4);
-        imageView1 = (ImageView) findViewById(R.id.imageview1);
-        imageView2 = (ImageView) findViewById(R.id.imageview2);
-
-       if( sqliteHelper2.isOTGexists("1") == true){
+        textView1 = (TextView) findViewById(R.id.text1);
+        textView2 = (TextView) findViewById(R.id.text2);
+        textView3 = (TextView) findViewById(R.id.text3);
+        textView4 = (TextView) findViewById(R.id.text4);
+        imageView1 = (ImageView) findViewById(R.id.image1);
+        imageView2 = (ImageView) findViewById(R.id.image2);
 
 
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
@@ -63,17 +63,7 @@ public class OTGActivity extends AppCompatActivity {
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         registerReceiver(usbReceiver, filter);
         discoverDevice();
-       }
-       else{
 
-           textView1.setVisibility(View.GONE);
-           textView2.setVisibility(View.GONE);
-           textView3.setVisibility(View.VISIBLE);
-           textView4.setVisibility(View.VISIBLE);
-           imageView1.setVisibility(View.GONE);
-           imageView2.setVisibility(View.VISIBLE);
-
-       }
 
 
 
@@ -91,14 +81,23 @@ public class OTGActivity extends AppCompatActivity {
     private  void runAll() {
 
         try {
-            //in order to setup usb
-            //CreateFile();
 
-            //in order to validate usb
             checkAndReadFile();
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        finally {
+            if(flag == false){
+
+                textView1.setVisibility(View.GONE);
+                textView2.setVisibility(View.GONE);
+                textView3.setVisibility(View.VISIBLE);
+                textView4.setVisibility(View.VISIBLE);
+                imageView1.setVisibility(View.GONE);
+                imageView2.setVisibility(View.VISIBLE);
+
+            }
         }
 
     }
@@ -172,6 +171,8 @@ public class OTGActivity extends AppCompatActivity {
 
         if( readStr.trim().equals(randStr) )
         {
+            flag = true;
+
             textView1.setVisibility(View.VISIBLE);
             textView2.setVisibility(View.VISIBLE);
             textView3.setVisibility(View.GONE);
@@ -179,15 +180,9 @@ public class OTGActivity extends AppCompatActivity {
             imageView1.setVisibility(View.VISIBLE);
             imageView2.setVisibility(View.GONE);
         }
-        else
-        {
-            textView1.setVisibility(View.GONE);
-            textView2.setVisibility(View.GONE);
-            textView3.setVisibility(View.VISIBLE);
-            textView4.setVisibility(View.VISIBLE);
-            imageView1.setVisibility(View.GONE);
-            imageView2.setVisibility(View.VISIBLE);
-        }
+
+
+
 
     }
 

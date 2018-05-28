@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -84,17 +83,16 @@ public class OtgRegister extends AppCompatActivity {
         progressDialog.setMessage("Please wait until OTG Registration process has finished ...");
         progressDialog.show();
 
-        new CountDownTimer(30000, 1000) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
-            public void onTick(long millisUntilFinished) {
 
-            }
-
-            public void onFinish() {
                 progressDialog.dismiss();
+
             }
 
-        }.start();
+        }, 3000);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -106,7 +104,7 @@ public class OtgRegister extends AppCompatActivity {
 
             }
 
-        }, 9000);
+        }, 5000);
 
 
     }
