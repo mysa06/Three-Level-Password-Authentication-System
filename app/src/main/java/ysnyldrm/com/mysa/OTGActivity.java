@@ -276,7 +276,7 @@ public class OTGActivity extends AppCompatActivity {
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
 
-                // determine if connected device is a mass storage devuce
+                // determine if connected device is a mass storage device
                 if (device != null) {
                     if (OTGActivity.this.device != null) {
                         OTGActivity.this.device.close();
