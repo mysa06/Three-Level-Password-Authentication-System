@@ -130,7 +130,7 @@ public class SqliteHelper2 extends SQLiteOpenHelper {
             User2 user3 = new User2(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
             //Match both passwords check they are same or not
 
-            return user3.vendorid;
+            return user3.guid;
         }
         else
             return null;

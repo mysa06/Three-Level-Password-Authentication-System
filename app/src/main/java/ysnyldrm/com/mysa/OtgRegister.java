@@ -1,6 +1,7 @@
 package ysnyldrm.com.mysa;
 
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,11 +22,9 @@ import android.widget.Toast;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
-import com.github.mjdev.libaums.fs.UsbFileInputStream;
 import com.github.mjdev.libaums.fs.UsbFileOutputStream;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -70,42 +70,45 @@ public class OtgRegister extends AppCompatActivity {
         registerReceiver(usbReceiver, filter);
         discoverDevice();
 
-
-
-        if (sqliteHelper2.isOTGexists("1") == true) {
-            textView1.setVisibility(View.VISIBLE);
-            textView2.setVisibility(View.VISIBLE);
-            textView3.setVisibility(View.GONE);
-            textView4.setVisibility(View.GONE);
-            imageView1.setVisibility(View.VISIBLE);
-            imageView2.setVisibility(View.GONE);
+        finalprocess();
 
 
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
+    }
 
-                    Intent intent = new Intent(OtgRegister.this,FingerprintActivity.class);
-                    startActivity(intent);
+    public void finalprocess (){
 
-                }
+        final ProgressDialog progressDialog = new ProgressDialog(this,
+                R.style.Theme_AppCompat_DayNight_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Please wait until OTG Registration process has finished ...");
+        progressDialog.show();
 
-            }, 3000);
+        new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            public void onFinish() {
+                progressDialog.dismiss();
+            }
+
+        }.start();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
 
+                Intent intent = new Intent(OtgRegister.this,FingerprintActivity.class);
+                startActivity(intent);
 
-        } else {
+            }
 
-            textView1.setVisibility(View.GONE);
-            textView2.setVisibility(View.GONE);
-            textView3.setVisibility(View.VISIBLE);
-            textView4.setVisibility(View.VISIBLE);
-            imageView1.setVisibility(View.GONE);
-            imageView2.setVisibility(View.VISIBLE);
+        }, 9000);
 
 
-        }
     }
 
     /**
@@ -124,6 +127,29 @@ public class OtgRegister extends AppCompatActivity {
             //in order to setup usb
             CreateFile();
             sqliteHelper2.addUser(new User2(null, "vendor1", "product1", gd, randomstr));
+
+            if (sqliteHelper2.isOTGexists("1") == true) {
+                textView1.setVisibility(View.VISIBLE);
+                textView2.setVisibility(View.VISIBLE);
+                textView3.setVisibility(View.GONE);
+                textView4.setVisibility(View.GONE);
+                imageView1.setVisibility(View.VISIBLE);
+                imageView2.setVisibility(View.GONE);
+
+
+
+
+            } else {
+
+                textView1.setVisibility(View.GONE);
+                textView2.setVisibility(View.GONE);
+                textView3.setVisibility(View.VISIBLE);
+                textView4.setVisibility(View.VISIBLE);
+                imageView1.setVisibility(View.GONE);
+                imageView2.setVisibility(View.VISIBLE);
+
+
+            }
 
             //in order to validate usb
             // checkAndReadFile();
@@ -191,41 +217,7 @@ public class OtgRegister extends AppCompatActivity {
         return new BigInteger(130, random).toString(32);
     }
 
-    // file name(guid) and randomString(randStr) get from database
-    private  void checkAndReadFile()
-            throws IOException {
 
-        String fileName = "da87770d-bab0-4b38-8502-07c3b7bcf0f4.mysa";
-        String randStr = "v5lntqtllt1jse9i1cbabha001";
-        UsbFile[] files;
-
-        UsbFile root = fs.getRootDirectory();
-        FileSystem currentFs = device.getPartitions().get(0).getFileSystem();
-        UsbFile file = root.search(fileName);
-
-        InputStream is = new UsbFileInputStream(file);
-        byte[] buffer = new byte[currentFs.getChunkSize()];
-        is.read(buffer);
-        String readStr = new String(buffer);
-
-        if( readStr.trim().equals(randStr) )
-        {
-
-            Toast.makeText(this, "The usb passed",
-                    Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            Toast.makeText(this, "The usb failed",
-                    Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-    /**
-     * Searches for connected mass storage devices, and initializes them if it
-     * could find some.
-     */
     private  void discoverDevice() {
 
         UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
@@ -254,6 +246,8 @@ public class OtgRegister extends AppCompatActivity {
             usbManager.requestPermission(device.getUsbDevice(), permissionIntent);
 
         }
+
+
 
     }
 

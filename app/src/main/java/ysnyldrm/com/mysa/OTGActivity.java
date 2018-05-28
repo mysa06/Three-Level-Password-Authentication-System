@@ -34,6 +34,7 @@ public class OTGActivity extends AppCompatActivity {
 
     private SecureRandom random = new SecureRandom();
     SqliteHelper2 sqliteHelper2;
+
     TextView textView1;
     TextView textView2;
     TextView textView3;
@@ -54,11 +55,26 @@ public class OTGActivity extends AppCompatActivity {
         imageView1 = (ImageView) findViewById(R.id.imageview1);
         imageView2 = (ImageView) findViewById(R.id.imageview2);
 
+       if( sqliteHelper2.isOTGexists("1") == true){
+
+
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         registerReceiver(usbReceiver, filter);
         discoverDevice();
+       }
+       else{
+
+           textView1.setVisibility(View.GONE);
+           textView2.setVisibility(View.GONE);
+           textView3.setVisibility(View.VISIBLE);
+           textView4.setVisibility(View.VISIBLE);
+           imageView1.setVisibility(View.GONE);
+           imageView2.setVisibility(View.VISIBLE);
+
+       }
+
 
 
     }
