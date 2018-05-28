@@ -41,7 +41,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="189dp"
-        android:text="Login"
+        android:text="Logın"
         android:onClick="validate"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
