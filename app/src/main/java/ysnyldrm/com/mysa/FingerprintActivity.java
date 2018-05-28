@@ -25,6 +25,7 @@ public class FingerprintActivity extends AppCompatActivity implements FingerPrin
     private Button mGoToPasswordBtn;
     private FingerPrintAuthHelper mFingerPrintAuthHelper;
     SqliteHelper2 sqliteHelper2;
+    SqliteHelper sqliteHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,17 @@ public class FingerprintActivity extends AppCompatActivity implements FingerPrin
         setContentView(R.layout.activity_fingerprint);
 
         sqliteHelper2 = new SqliteHelper2(this);
+
+       /* if(sqliteHelper2.getGuid() == null){
+            Toast toast = Toast.makeText(FingerprintActivity.this,"Your OTG device is not registered please restart the application ! ", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+
+          //  sqliteHelper.dropTable2();
+            sqliteHelper.dropTable();
+
+        } */
+
 
 
 

@@ -52,16 +52,21 @@ public class SqliteHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+   public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         //drop table to create new one if database version updated
         sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + TABLE_USERS);
+    }
+
+    /* public void dropTable2() {
+
+        sqLiteDatabase.execSQL("DELETE FROM users");
     }
 
 
     public void dropTable(){
 
         sqLiteDatabase.execSQL(" DROP TABLE IF EXISTS " + TABLE_USERS);
-    }
+    } */
 
 
     //using this method we can add users to user table

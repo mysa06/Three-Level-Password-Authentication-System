@@ -1,112 +1,90 @@
 package ysnyldrm.com.mysa;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.PhoneAuthCredential;
-import com.google.firebase.auth.PhoneAuthProvider;
-import com.stfalcon.smsverifycatcher.OnSmsCatchListener;
-import com.stfalcon.smsverifycatcher.SmsVerifyCatcher;
-
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Random;
 
 import io.github.krtkush.lineartimer.LinearTimer;
 import io.github.krtkush.lineartimer.LinearTimerView;
 
-public class OtpActivity extends AppCompatActivity  {
-
-    private final String TAG  = "OTP";
-
-    private CountDownTimer countDownTimer;
-    private SmsVerifyCatcher smsVerifyCatcher;
-    EditText editTextPhone, editTextCode;
+public class OtpActivity extends AppCompatActivity {
 
     SqliteHelper sqliteHelper;
-
+    String Phone;
+    String randomNumber;
     private TextView time;
-
-    private FirebaseAuth mAuth;
-
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks getmCallbacks;
-    String verification_code;
-
-    String codeSent;
-
-    String phoneNumber;
-
-    private Button otg;
-
-    //Timer:
+    Button send;
+    EditText edt;
+    String usersCode;
+    String validationNumber;
+    int counter = 5;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
+        send = (Button) findViewById(R.id.reSend);
+        edt = (EditText) findViewById(R.id.editTextNum);
 
+        LinearTimerView linearTimerView = (LinearTimerView)
+                findViewById(R.id.linearTimer);
         sqliteHelper = new SqliteHelper(this);
+        Phone = "0" + sqliteHelper.getPhoneNumber();
+        randomNumberGenerator();
+        refreshTimer();
+        sendOTP();
 
-        phoneNumber = sqliteHelper.getPhoneNumber();
+    }
 
-        mAuth = FirebaseAuth.getInstance();
+    public void sendOTP(){
+        try {
 
-        editTextCode = findViewById(R.id.editTextCode);
+            send.setVisibility(View.GONE);
+            SmsManager smsManager = SmsManager.getDefault();
 
-        otg = findViewById(R.id.nextOTG);
-
-        otg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), OTGActivity.class));
-            }
-        });
-
-        getmCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            @Override
-            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-
-            }
-
-            @Override
-            public void onVerificationFailed(FirebaseException e) {
-
-            }
-
-            @Override
-            public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                super.onCodeSent(s, forceResendingToken);
-                verification_code = s;
-                Toast.makeText(getApplicationContext(),"code sent to number",Toast.LENGTH_SHORT).show();
+            smsManager.sendTextMessage(Phone, null, randomNumber, null, null);
 
 
-            }
-        };
+            Toast.makeText(OtpActivity.this, "One-Time Password is  sended  ", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Toast.makeText(OtpActivity.this, "One-Time Password cannot sended ! ", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-        send_Sms();
+    public void sendOTPButton(View view){
+        try {
 
-        //sendVerificationCode();
+            refreshTimer();
+            randomNumberGenerator();
+            send.setVisibility(View.INVISIBLE);
+            // randomNumber
+            SmsManager smsManager = SmsManager.getDefault();
+
+            smsManager.sendTextMessage(Phone, null, randomNumber, null, null);
 
 
+            Toast.makeText(OtpActivity.this, "One-Time Password is succesfully sended ! ", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Toast.makeText(OtpActivity.this, "One-Time Password cannot sended ! ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void refreshTimer(){
 
         LinearTimerView linearTimerView = (LinearTimerView)
                 findViewById(R.id.linearTimer);
@@ -127,110 +105,57 @@ public class OtpActivity extends AppCompatActivity  {
 
             public void onFinish() {
 
-                time.setText("done!");
+                send.setVisibility(View.VISIBLE);
+
             }
         }.start();
 
-        // Start the timer.
-
-        final EditText etCode = (EditText) findViewById(R.id.editTextCode);
-
-        smsVerifyCatcher = new SmsVerifyCatcher(this, new OnSmsCatchListener<String>() {
-            @Override
-            public void onSmsCatch(String message) {
-                String code = parseCode(message);//Parse verification code
-                etCode.setText(code);//set code in edit text
-                //then you can send verification code to server
-            }
-        });
-
     }
 
-    private String parseCode(String message) {
-        Pattern p = Pattern.compile("\\b\\d{6}\\b");
-        Matcher m = p.matcher(message);
-        String code = "";
-        while (m.find()) {
-            code = m.group(0);
-        }
-        return code;
+    public void randomNumberGenerator(){
+        Random rnd = new Random();
+        int n = 100000 + rnd.nextInt(900000);
+        randomNumber = Integer.toString(n);
+        validationNumber = randomNumber;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        smsVerifyCatcher.onStart();
-    }
+    public void validate(View view){
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        smsVerifyCatcher.onStop();
-    }
-/*
-    private void verifyLoginCode(){
-        String code = editTextCode.getText().toString();
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(codeSent, code);
-        signInWithPhoneAuthCredential(credential);
-        //FirebaseAuth.getInstance().signOut();
-    }
+        usersCode = edt.getText().toString();
 
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            //here you can open new activity
-                            Toast.makeText(getApplicationContext(),
-                                    "Login Successfull", Toast.LENGTH_LONG).show();
-                        } else {
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Incorrect Verification Code ", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                });
-    }
-*/
+        if(validationNumber.matches(usersCode)){
 
-    public void send_Sms(){
-        //String number = phoneNumber;
 
-        Log.d(TAG,"phone number : : : : " + phoneNumber);
+            final ProgressDialog progressDialog = new ProgressDialog(this,
+                    R.style.Theme_AppCompat_DayNight_Dialog);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Validation is succesful , you are redirecting to next step, please plug-in your OTG device...");
+            progressDialog.show();
 
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+905301180330",60,TimeUnit.SECONDS,this,getmCallbacks
-        );
-    }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-    public void signInWithPhone(PhoneAuthCredential credential){
-        mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(getApplicationContext(), "User signed in Successfully.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(OtpActivity.this,OtgRegister.class);
+                    startActivity(intent);
+
                 }
+
+            }, 4000);
+
+
+
+        }
+        else{
+
+            Toast.makeText(OtpActivity.this, " Validation is unsuccesful , please  wait the timer and re-send OTP !", Toast.LENGTH_LONG).show();
+            counter--;
+            if(counter == 0){
+                Toast.makeText(OtpActivity.this, " Login attemp is failed, you are redirecting to login page !", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this,FingerprintActivity.class);
+                startActivity(intent);
             }
-        });
-    }
-
-    public void Verify(View view){
-
-        startActivity(new Intent(getApplicationContext(), OTGActivity.class));
-
-        /*String input_code = editTextCode.getText().toString();
-        //if (verification_code.equals("")){
-            verifyPhoneNumber(verification_code,input_code);
-       // }*/
-    }
-
-    public void verifyPhoneNumber(String verifyCode, String inputCode){
-
-        Log.d(TAG," verify code :  " + verifyCode);
-        PhoneAuthCredential credential =  PhoneAuthProvider.getCredential(verifyCode,inputCode);
-        signInWithPhone(credential);
+        }
     }
 
     @Override
@@ -248,6 +173,4 @@ public class OtpActivity extends AppCompatActivity  {
                     }
                 }).setNegativeButton("No", null).show();
     }
-
 }
-
