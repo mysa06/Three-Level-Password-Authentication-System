@@ -41,7 +41,7 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_marginBottom="2dp"
-            android:text="You are redirecting to login page ... Please Wait !!!"
+            android:text="You are redirecting to login page ... Please Wait ..."
             android:textAlignment="center"
             android:textColor="@color/colorBlack"
             android:textSize="25sp"
@@ -85,7 +85,7 @@
             android:layout_height="150dp"
             android:src="@drawable/error"
             android:id="@+id/imageview2"
-            android:visibility="gone"></ImageView>
+            android:visibility="gone"/>
 
         <TextView
             android:layout_width="match_parent"

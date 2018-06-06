@@ -1,28 +1,22 @@
 package ysnyldrm.com.mysa;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static String IMEI;
 
+
     @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -59,20 +54,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         sqliteHelper = new SqliteHelper(this);
 
 
         String phoneNumber = sqliteHelper.getPhoneNumber();
-
-        if (phoneNumber != null) {
-
-            Intent intent = new Intent(this, FingerprintActivity.class);
-            startActivity(intent);
-
-        }
+        String imeiNumber = sqliteHelper.getImeiNumber();
 
         TelephonyManager tManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         IMEI = tManager.getImei();
+
+        if (phoneNumber != null) {
+
+            if(imeiNumber.matches(IMEI)){
+                Intent intent = new Intent(this, FingerprintActivity.class);
+                startActivity(intent);
+            }
+
+        }
+
+
 
         //Log.d(TAG,"imei : " + IMEI);
 
@@ -85,12 +86,13 @@ public class MainActivity extends AppCompatActivity {
                     String Email = editTextEmail.getText().toString();
                     String Password = editTextPassword.getText().toString();
                     String PhoneNumber = editTextPhoneNumber.getText().toString();
+                    String Imei = IMEI;
 
                     //Check in the database is there any user associated with  this email
                     if (!sqliteHelper.isEmailExists(Email)) {
 
                         //Email does not exist now add new user to database
-                        sqliteHelper.addUser(new User(null, UserName, Email, Password, PhoneNumber));
+                        sqliteHelper.addUser(new User(null, UserName, Email, Password, PhoneNumber, Imei));
                         Snackbar.make(buttonRegister, "Hint : If your OTG device is not connected at  any time the program will execute yourself !", Snackbar.LENGTH_LONG).show();
                         new Handler().postDelayed(new Runnable() {
                             @Override

@@ -136,6 +136,7 @@ public class OtpActivity extends AppCompatActivity {
         int n = 100000 + rnd.nextInt(900000);
         randomNumber = Integer.toString(n);
         validationNumber = randomNumber;
+        randomNumber = "Please don't share this password. Your verification code is: " + randomNumber ;
     }
 
     public void otoValidateNextOTG(){
@@ -183,7 +184,7 @@ public class OtpActivity extends AppCompatActivity {
         if(validationNumber.matches(usersCode)){
 
 
-            final ProgressDialog progressDialog = new ProgressDialog(this,
+        /*    final ProgressDialog progressDialog = new ProgressDialog(this,
                     R.style.Theme_AppCompat_DayNight_Dialog);
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Validation is succesful , you are redirecting to next step, please plug-in your OTG device...");
@@ -193,14 +194,16 @@ public class OtpActivity extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                    Intent intent = new Intent(OtpActivity.this,OtgRegister.class);
-                    startActivity(intent);
+
 
                 }
 
-            }, 4000);
+            }, 4000); */
 
 
+
+            Intent intent = new Intent(OtpActivity.this,OtgRegister.class);
+            startActivity(intent);
 
         }
         else{
