@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import android.telephony.TelephonyManager;
+
 public class PasswordActivity extends AppCompatActivity {
 
     //Declaration EditTexts
@@ -28,6 +30,9 @@ public class PasswordActivity extends AppCompatActivity {
 
     //Declaration SqliteHelper
     SqliteHelper sqliteHelper;
+
+    //Declaration TelManager
+    TelephonyManager tel;
 
 
     @Override

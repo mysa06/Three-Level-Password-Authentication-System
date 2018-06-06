@@ -15,7 +15,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.stfalcon.smsverifycatcher.OnSmsCatchListener;
+import com.stfalcon.smsverifycatcher.SmsVerifyCatcher;
+
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.github.krtkush.lineartimer.LinearTimer;
 import io.github.krtkush.lineartimer.LinearTimerView;
@@ -32,6 +37,7 @@ public class OtpActivity extends AppCompatActivity {
     String validationNumber;
     int counter = 5;
 
+    private SmsVerifyCatcher smsVerifyCatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,19 @@ public class OtpActivity extends AppCompatActivity {
         randomNumberGenerator();
         refreshTimer();
         sendOTP();
+
+        final EditText etCode = (EditText) findViewById(R.id.editTextNum);
+
+        smsVerifyCatcher = new SmsVerifyCatcher(this, new OnSmsCatchListener<String>() {
+            @Override
+            public void onSmsCatch(String message) {
+                String code = parseCode(message);//Parse verification code
+                etCode.setText(code);//set code in edit text
+                //then you can send verification code to server
+                otoValidateNextOTG();
+            }
+        });
+
 
     }
 
@@ -119,6 +138,44 @@ public class OtpActivity extends AppCompatActivity {
         validationNumber = randomNumber;
     }
 
+    public void otoValidateNextOTG(){
+        usersCode = edt.getText().toString();
+
+        if(validationNumber.matches(usersCode)){
+
+
+            final ProgressDialog progressDialog = new ProgressDialog(this,
+                    R.style.Theme_AppCompat_DayNight_Dialog);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Validation is succesful , you are redirecting to next step, please plug-in your OTG device...");
+            progressDialog.show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    Intent intent = new Intent(OtpActivity.this,OtgRegister.class);
+                    startActivity(intent);
+
+                }
+
+            }, 4000);
+
+
+
+        }
+        else{
+
+            Toast.makeText(OtpActivity.this, " Validation is unsuccesful , please  wait the timer and re-send OTP !", Toast.LENGTH_LONG).show();
+            counter--;
+            if(counter == 0){
+                Toast.makeText(OtpActivity.this, " Login attemp is failed, you are redirecting to login page !", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this,FingerprintActivity.class);
+                startActivity(intent);
+            }
+        }
+    }
+
     public void validate(View view){
 
         usersCode = edt.getText().toString();
@@ -156,6 +213,29 @@ public class OtpActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }
+    }
+
+
+    private String parseCode(String message) {
+        Pattern p = Pattern.compile("\\b\\d{6}\\b");
+        Matcher m = p.matcher(message);
+        String code = "";
+        while (m.find()) {
+            code = m.group(0);
+        }
+        return code;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        smsVerifyCatcher.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        smsVerifyCatcher.onStop();
     }
 
     @Override
