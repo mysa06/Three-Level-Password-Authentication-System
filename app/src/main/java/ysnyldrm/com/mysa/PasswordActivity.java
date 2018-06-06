@@ -12,8 +12,7 @@ import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import android.telephony.TelephonyManager;
+import android.widget.Toast;
 
 public class PasswordActivity extends AppCompatActivity {
 
@@ -31,8 +30,7 @@ public class PasswordActivity extends AppCompatActivity {
     //Declaration SqliteHelper
     SqliteHelper sqliteHelper;
 
-    //Declaration TelManager
-    TelephonyManager tel;
+
 
 
     @Override
@@ -41,6 +39,11 @@ public class PasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password);
         sqliteHelper = new SqliteHelper(this);
+
+
+        MainActivity ma = new MainActivity();
+        Toast.makeText(getApplicationContext(),"imei : " + ma.IMEI , Toast.LENGTH_SHORT).show();
+
         initViews();
 
 

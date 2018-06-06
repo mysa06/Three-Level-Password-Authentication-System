@@ -1,17 +1,28 @@
 package ysnyldrm.com.mysa;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
     //Declaration SqliteHelper
     SqliteHelper sqliteHelper;
 
+
+    final private String TAG = "Main Activity";
+
+
+    public static String IMEI;
+
+    @SuppressLint("MissingPermission")
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -42,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         sqliteHelper = new SqliteHelper(this);
 
+
         String phoneNumber = sqliteHelper.getPhoneNumber();
 
         if (phoneNumber != null) {
@@ -50,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
 
         }
+
+        TelephonyManager tManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        IMEI = tManager.getImei();
+
+        //Log.d(TAG,"imei : " + IMEI);
 
         initViews();
         buttonRegister.setOnClickListener(new View.OnClickListener() {
