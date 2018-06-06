@@ -196,5 +196,27 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     }
 
+    public String getPassword() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS,// Selecting Table
+                new String[]{KEY_ID, KEY_USER_NAME, KEY_EMAIL, KEY_PASSWORD, KEY_PHONENUMBER, KEY_IMEI},//Selecting columns want to query
+                KEY_ID + "=?",
+                new String[]{"1"},//Where clause
+                null, null, null);
+
+
+        if (cursor != null && cursor.moveToFirst() && cursor.getCount() > 0) {
+            //if cursor has value then in user database there is user associated with this given email
+            User user1 = new User(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
+            //Match both passwords check they are same or not
+
+            return user1.password;
+        }
+        else
+            return null;
+
+
+    }
+
 
 }

@@ -137,6 +137,7 @@ public class OtgRegister extends AppCompatActivity {
 
 
 
+
             } else {
 
                 textView1.setVisibility(View.GONE);

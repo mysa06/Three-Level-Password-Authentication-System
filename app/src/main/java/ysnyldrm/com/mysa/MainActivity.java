@@ -18,6 +18,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,6 +92,12 @@ public class MainActivity extends AppCompatActivity {
                     String UserName = editTextUserName.getText().toString();
                     String Email = editTextEmail.getText().toString();
                     String Password = editTextPassword.getText().toString();
+
+                    char[] Pw = Password.toCharArray();
+                    byte[] bytePw = hash(Pw);
+                    String hashedPassword = new String(bytePw);
+                    Password = hashedPassword;
+
                     String PhoneNumber = editTextPhoneNumber.getText().toString();
                     String Imei = IMEI;
 
@@ -214,6 +227,24 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    public byte[] hash(char[] password) {
+        int ITERATIONS = 10000;
+        int KEY_LENGTH = 256;
+        byte[] salt = "E1F53135E559C253".getBytes();
+        PBEKeySpec spec = new PBEKeySpec(password, salt, ITERATIONS, KEY_LENGTH);
+        Arrays.fill(password, Character.MIN_VALUE);
+        try {
+            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            return skf.generateSecret(spec).getEncoded();
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new AssertionError("Error while hashing a password: " + e.getMessage(), e);
+        } finally {
+            spec.clearPassword();
+        }
+    }
+
+
 
     @Override
     public void onBackPressed() {
