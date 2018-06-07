@@ -1,7 +1,6 @@
 package ysnyldrm.com.mysa;
 
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -77,22 +76,6 @@ public class OtgRegister extends AppCompatActivity {
 
     public void finalprocess (){
 
-        final ProgressDialog progressDialog = new ProgressDialog(this,
-                R.style.Theme_AppCompat_DayNight_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Please wait until OTG Registration process has finished ...");
-        progressDialog.show();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-
-                progressDialog.dismiss();
-
-            }
-
-        }, 3000);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -104,7 +87,7 @@ public class OtgRegister extends AppCompatActivity {
 
             }
 
-        }, 5000);
+        }, 10000);
 
 
     }
