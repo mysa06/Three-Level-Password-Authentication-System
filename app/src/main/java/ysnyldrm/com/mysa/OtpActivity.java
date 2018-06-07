@@ -142,7 +142,7 @@ public class OtpActivity extends AppCompatActivity {
 
         if(validationNumber.matches(usersCode)){
 
-            Intent intent = new Intent(OtpActivity.this,OtgRegister.class);
+            Intent intent = new Intent(OtpActivity.this,OTGActivity.class);
             startActivity(intent);
 
 
@@ -185,7 +185,7 @@ public class OtpActivity extends AppCompatActivity {
 
 
 
-            Intent intent = new Intent(OtpActivity.this,OtgRegister.class);
+            Intent intent = new Intent(OtpActivity.this,OTGActivity.class);
             startActivity(intent);
 
         }
