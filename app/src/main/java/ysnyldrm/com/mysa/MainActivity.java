@@ -1,26 +1,33 @@
 package ysnyldrm.com.mysa;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -48,12 +55,13 @@ public class MainActivity extends AppCompatActivity {
 
     final private String TAG = "Main Activity";
 
+    List<String> permissions = new ArrayList<String>(); // Alınmamış izinleri listeye ekleyeceğiz.
 
     public static String IMEI;
 
 
-    @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.O)
+    @SuppressLint({"HardwareIds", "NewApi"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -61,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ControlPermissions();
 
         sqliteHelper = new SqliteHelper(this);
 
@@ -69,20 +78,42 @@ public class MainActivity extends AppCompatActivity {
         String imeiNumber = sqliteHelper.getImeiNumber();
 
         TelephonyManager tManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        IMEI = tManager.getImei();
+
 
         if (phoneNumber != null) {
 
-            if(imeiNumber.matches(IMEI)){
+            if (imeiNumber == IMEI) {
                 Intent intent = new Intent(this, FingerprintActivity.class);
                 startActivity(intent);
             }
 
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                IMEI = tManager.getImei();
+            }
+            else{
+                IMEI = tManager.getImei();
+            }
+        }
+        else{
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    IMEI = tManager.getImei();
+
+                }
+            }
+            else{
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    IMEI = tManager.getImei();
+                }
+            }
+        }
 
 
-        //Log.d(TAG,"imei : " + IMEI);
+
+        Log.d(TAG,"imei : " + IMEI);
 
         initViews();
         buttonRegister.setOnClickListener(new View.OnClickListener() {
@@ -241,6 +272,68 @@ public class MainActivity extends AppCompatActivity {
             throw new AssertionError("Error while hashing a password: " + e.getMessage(), e);
         } finally {
             spec.clearPassword();
+        }
+    }
+
+
+    public void ControlPermissions(){
+
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED){ // Sms okuma izni verilmemişse listeye ekle
+            permissions.add(android.Manifest.permission.READ_SMS);
+        }
+
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED){ // Belleğe yazma izni verilmemişse listeye ekle
+            permissions.add(android.Manifest.permission.RECEIVE_SMS);
+        }
+
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED){ // Belleğe yazma izni verilmemişse listeye ekle
+            permissions.add(android.Manifest.permission.SEND_SMS);
+        }
+
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED){ // Belleğe yazma izni verilmemişse listeye ekle
+            permissions.add(android.Manifest.permission.INTERNET);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(android.Manifest.permission.READ_PHONE_STATE);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        /* İzin listemiz boş değilse artık iznimizi istiyoruz. Burada kullanıcıya bir diyalog kutusu çıkacak ve izni verip vermeyeceği sorulacak. Kullanıcının cevabına göre bize bir result dönecek. Yine bunu 3. parametrede gönderdiğimiz kod ile yakalayacağız. Bu değeri biz belirliyoruz. 2. parametre ise string dizisi alıyor. */
+
+        if(!permissions.isEmpty()){
+            ActivityCompat.requestPermissions(this, permissions.toArray(new String[permissions.size()]), 0);
+            ActivityCompat.requestPermissions(this, permissions.toArray(new String[permissions.size()]), 1);
+            ActivityCompat.requestPermissions(this, permissions.toArray(new String[permissions.size()]), 2);
+            ActivityCompat.requestPermissions(this, permissions.toArray(new String[permissions.size()]), 3);
+            ActivityCompat.requestPermissions(this, permissions.toArray(new String[permissions.size()]), 4);
+            ActivityCompat.requestPermissions(this, permissions.toArray(new String[permissions.size()]), 5);
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch ( requestCode ) {
+            case 0: {
+                for( int i = 0; i < permissions.length; i++ ) { // İstediğimiz izinler dolaşalım
+                    if( grantResults[i] == PackageManager.PERMISSION_GRANTED ) { // Eğer izin verilmişse
+                        Log.d( "Permissions", "İzin Verildi: " + permissions[i] ); // İsmiyle birlikte izin verildi yazıp log basalım.
+
+                        // İzin verildiği için burada istediğiniz işlemleri yapabilirsiniz. Verilen izne göre sms okuyabilir ve belleğe yazabilirsiniz.
+                    } else if( grantResults[i] == PackageManager.PERMISSION_DENIED ) { // Eğer izin reddedildiyse
+                        Log.d( "Permissions", "İzin Reddedildi: " + permissions[i] ); // İsmiyle birlikte reddedildi yazıp log basalım.
+                        // Burada bir toast mesajı gösterebilirsiniz. Mesela bu işlemi yapabilmek için izin vermeniz gereklidir. gibi..
+                    }
+                }
+            }
+            break;
+            default: {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
         }
     }
 
