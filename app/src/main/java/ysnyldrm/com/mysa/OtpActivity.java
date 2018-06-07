@@ -1,11 +1,9 @@
 package ysnyldrm.com.mysa;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
@@ -144,23 +142,8 @@ public class OtpActivity extends AppCompatActivity {
 
         if(validationNumber.matches(usersCode)){
 
-
-            final ProgressDialog progressDialog = new ProgressDialog(this,
-                    R.style.Theme_AppCompat_DayNight_Dialog);
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Validation is succesful , you are redirecting to next step, please plug-in your OTG device...");
-            progressDialog.show();
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    Intent intent = new Intent(OtpActivity.this,OtgRegister.class);
-                    startActivity(intent);
-
-                }
-
-            }, 4000);
+            Intent intent = new Intent(OtpActivity.this,OtgRegister.class);
+            startActivity(intent);
 
 
 
